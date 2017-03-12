@@ -1,6 +1,7 @@
 shinyUI(fluidPage(
       titlePanel("Plot Predator/Prey Cycle By Restricting Days"),
-      h6("See README.md at LINK for some instructions on how to use this Shiny app."),
+      #h6("Check out this link for some instructions on how to use this Shiny app:"),
+      a(href="https://github.com/lukewolcott/ModulatedPredatorPrey", "INSTRUCTIONS"),
       sidebarLayout(
             sidebarPanel(
                   selectInput("dd_c", "Chemostat to plot:", 
