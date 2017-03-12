@@ -8,7 +8,8 @@ So far the main contents of interest are:
    + viewable at https://lukewolcott.github.io/ModulatedPredatorPrey/ExploratoryDataAnalysis.html
 
 2. Shiny app for exploring the data
-   + available at [https://lukewolcott.shinyapps.io/PredPreyCycleByRestrictingDays]
+   + available at https://lukewolcott.shinyapps.io/PredPreyCycleByRestrictingDays
+   + instructions below
 
 3. PDF of original Science article
 
