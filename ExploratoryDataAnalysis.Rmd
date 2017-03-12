@@ -12,17 +12,19 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo=FALSE)
 
 ### Summary
 
-The 2000 Science article "Hopf Bifurcation" by Fussmann et. al. measured predator-prey population dynamics modulated by a third nutrient parameter.  It recorded population fluctuations of rotifers (the predators) and bacteria (the prey) over runs of 50-250 days in carefully stabilized chemostats.  The experiment was run at different values of the nutrient nitrogen.  The study found that for extreme values of nitrogen the populations were static and stable -- either dying off or converging to constants -- but in an intermediate range the populations exhibited the delayed oscillations that are classic dynamics in predator-prey systems.
+The 2000 Science article "Crossing the Hopf Bifurcation in a Live Predator-Prey System" by Fussmann et. al. measured predator-prey population dynamics modulated by a third parameter.  It recorded population fluctuations of planktonic rotifers (*Brachionus calyciflorus*, the predators) and green algae (*Chlorella vulgaris*, the prey) over runs of 50-250 days in carefully stabilized chemostats.  The nutrient nitrogen was also added to the systems and held at a constant.  The dilution rate delta (the fraction of the system's volume that was replaced daily) was varied in each of the trial runs.
 
-The paper can be found here (LINK); a PDF is available on in the GitHub repo corresponding to this report.
+The study found that for extreme values of delta the populations were static and stable -- either dying off or converging to constants -- but in an intermediate range the populations exhibited the delayed oscillations that are classic dynamics in predator-prey systems.
 
-Here we look at the population data from the perspective of topology, and in particular perform topological data analysis.  We will show that the data from this study exhibit interesting topology; it has a nice shape.
+The paper can be found [here](http://biology.mcgill.ca/faculty/fussmann/articles/Fussmann_2000_Science.pdf); a PDF is available on in the GitHub repo corresponding to this report.
 
-Our primary interest in this report is to conduct the initial exploratory data analysis.
+In this ongoing project, we look at the population data from the perspective of topology, and in particular perform topological data analysis.  We conjecture that the data from this study exhibit interesting topology; it has a nice shape.
+
+Our primary interest in this particular report is to conduct the initial exploratory data analysis.
 
 ### Sampling Days
 
-Prof Gregor Fussmann generously shared the data from the 2000 study.  There were 14 runs of the experiment, at different values of delta (the nutrient nitrogen, in mg/cm^3 or something).  Populations of rotifers and bacteria were sampled daily over varying lengths of time.  The following figure shows the sampling days for the different runs; the y-axis gives the mean delta for each run of the experiment.
+Prof Gregor Fussmann generously shared the data from the 2000 study.  There were 14 runs of the experiment, at different values of delta (the dilution rate).  Populations of rotifers and algae were sampled daily over varying lengths of time.  The following figure shows the sampling days for the different runs; the y-axis gives the mean delta for each run of the experiment.
 
 ```{r, cache=TRUE}
 data <- read.csv("data_cleaned.csv")
@@ -40,7 +42,7 @@ g + geom_point()
 
 ### All the data at once
 
-It is possible to see all the population measurements at once, for the 14 different runs.  In the following 3D visualization (interactive in HTML), the y-axis is the bacteria population, the z-axis is the rotifer population, and the x-axis marks out the 14 different values of delta used in the 14 runs.
+It is possible to see all the population measurements at once, for the 14 different runs.  In the following 3D visualization (interactive in HTML), the y-axis is the algae population, the z-axis is the rotifer population, and the x-axis marks out the 14 different values of delta used in the 14 runs.
 
 ```{r}
 library(plotly)
@@ -49,7 +51,7 @@ plot_ly(x = data$meandelta, y = data$Chlorella, z=data$Brachionus, type="scatter
 
 ### Once slice shows a circle
 
-Based on the finding of the Fussmann et all paper, we conjecture that this data forms a sort of 3D bubble (see this report about TDA using simulated data (LINK)).  For example, the following figure shows the population data for the mean delta value of 0.8923, corresponding to trial "5r3".
+Based on the finding of the Fussmann et all paper, we conjecture that this data forms a sort of 3D bubble (see [this report about TDA using simulated data](https://lukewolcott.github.io/TDAwithSimulatedData/TDAwithSimulatedData.html)).  For example, the following figure shows the population data for the mean delta value of 0.8923, corresponding to trial "5r3".
 
 ```{r}
 d <- filter(data, chemostat == "5r3")
@@ -57,7 +59,7 @@ g <- ggplot(d, aes(color=as.factor(meandelta)))
 g + geom_point(aes(Chlorella, Brachionus))
 ```
 
-We can analyze the persistent homology of this 2D dataset, using the R package "TDA".  The following barcode detects the 1D homology corresponding to the "circle" that is evident in the data.  (See this report about TDA for more examples of how to interpret a persistent homology barcode (LINK).)
+We can analyze the persistent homology of this 2D dataset, using the R package "TDA".  The following barcode detects the 1D homology corresponding to the "circle" that is evident in the data.  (See [this report about TDA](https://lukewolcott.github.io/TDAwithSimulatedData/TDAwithSimulatedData.html) for more examples of how to interpret a persistent homology barcode.)
 
 ```{r, echo=TRUE}
 # library(TDA)
@@ -66,34 +68,32 @@ We can analyze the persistent homology of this 2D dataset, using the R package "
 
 ### Too many days
 
-Before we can run the persistent homology algorithm on the entire population dataset, we need to take into account the different lengths of the trial runs.  For example, in the following figure we see the population data from the "tan" trial with mean delta value of 0.6431.  
+Before we can run the persistent homology algorithm on the entire population dataset, we need to take into account the different lengths of the trial runs.  For example, in the following figure we see the population data from the "5y3high" trial with mean delta value of 0.6717.  
 
 ```{r}
-# filter for "tan", or maybe do "5y3high"
-# actually I think "5y3high" would be a better one to do
-d <- filter(data, chemostat == "tan")
+d <- filter(data, chemostat == "5y3high")
 g <- ggplot(d, aes(color=as.factor(meandelta)))
 g + geom_point(aes(Chlorella, Brachionus))
 ```
 
 
-The data does not show a nice circle, but this is because their are 113 days of measurement (the "5r3" trial has only 18 days).  The populations oscillate but drift enough over this time, to obscure any circles in noise.
+The data does not show a nice circle, but this is because there are 120 days of measurement (the "5r3" trial has only 18 days).  The populations oscillate but drift enough over this time, to obscure any circles in noise.
 
-The following four figures show different 20-day slices of this dataset, and we can see that there are indeed circles corresponding to the classic delayed population dynamics.
+The following figure shows a 20-day slices of this dataset, and we can see that there is indeed a circle corresponding to the classic delayed population dynamics.
 
 ```{r, echo=TRUE}
-# look for 4 good windows, write down the days for them
-# make 4 new data sets from d above, filtering for those days
+# look for a good windows, write down the days for them
+# make a new data set from d above, filtering for those days
 # plot as above
 
-# maybe also show the barcodes?
+# maybe also show the barcode?
 ```
 
 ### Awesome Shiny app
 
 In order to explore the data and begin to find reasonable ways to subset the days used in different trials, we made an awesome Shiny app:
 
-LINK HERE
+<https://lukewolcott.shinyapps.io/PredPreyCycleByRestrictingDays/>
 
 Using this, we can look through trials that use delta in the intermediate range, and think about how to choose perhaps a 20- or 30-day window.  (Note that some of the shorter trials were over about 20 days.) What is a good objective way to do this?  
 
