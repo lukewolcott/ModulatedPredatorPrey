@@ -5,7 +5,7 @@ So far the main contents of interest are:
 
 1. initial exploratory data analysis report
    + ExploratoryDataAnalysis.Rmd
-   + viewable at [lukewolcott.github.io/ModulatedPredatorPrey/ExploratoryDataAnalysis.html]
+   + viewable at https://lukewolcott.github.io/ModulatedPredatorPrey/ExploratoryDataAnalysis.html
 
 2. Shiny app for exploring the data
    + available at [https://lukewolcott.shinyapps.io/PredPreyCycleByRestrictingDays]
