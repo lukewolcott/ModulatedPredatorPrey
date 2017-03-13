@@ -61,9 +61,17 @@ g + geom_point(aes(Chlorella, Brachionus))
 
 We can analyze the persistent homology of this 2D dataset, using the R package "TDA".  The following barcode detects the 1D homology corresponding to the "circle" that is evident in the data.  (See [this report about TDA](https://lukewolcott.github.io/TDAwithSimulatedData/TDAwithSimulatedData.html) for more examples of how to interpret a persistent homology barcode.)
 
-```{r, echo=TRUE}
-# library(TDA)
-# persistent barcode for the dataset 'd' from above
+```{r}
+library(TDA)
+d <- d[,c(1,3)]
+d$Chlorella <- (d$Chlorella - mean(d$Chlorella))/sd(d$Chlorella)
+d$Brachionus <- (d$Brachionus - mean(d$Brachionus))/sd(d$Brachionus)
+maxscale <- 2 
+maxdimension <- 1
+Diag <- ripsDiag(X = d, maxdimension, maxscale, library = "GUDHI")
+plot(Diag[["diagram"]], barcode = TRUE)
+mtext("Barcode of 5r3 trial")
+legend("right", lty=c(1,1), lwd=c(3,3), col=c("red", "black"), legend=c("H1", "H0"))
 ```
 
 ### Too many days
@@ -79,19 +87,19 @@ g + geom_point(aes(Chlorella, Brachionus))
 
 The data does not show a nice circle, but this is because there are 120 days of measurement (the "5r3" trial has only 18 days).  The populations oscillate but drift enough over this time, to obscure any circles in noise.
 
-The following figure shows a 20-day slices of this dataset, and we can see that there is indeed a circle corresponding to the classic delayed population dynamics.
+The following figure shows a 20-day slices of this dataset (days 72 -- 92), and we can see that there is indeed a circle corresponding to the classic delayed population dynamics.
 
-```{r, echo=TRUE}
-# look for a good windows, write down the days for them
-# make a new data set from d above, filtering for those days
-# plot as above
-
-# maybe also show the barcode?
+```{r}
+d <- filter(data, chemostat == "5y3high")
+d <- filter(d, day. >= 71 & day. <= 92)
+g <- ggplot(d, aes(color=as.factor(meandelta)))
+g + geom_point(aes(Chlorella, Brachionus))
 ```
 
-### Awesome Shiny app
 
-In order to explore the data and begin to find reasonable ways to subset the days used in different trials, we made an awesome Shiny app:
+### A Shiny app
+
+In order to explore the data and begin to find reasonable ways to subset the days used in different trials, we made a Shiny app:
 
 <https://lukewolcott.shinyapps.io/PredPreyCycleByRestrictingDays/>
 
